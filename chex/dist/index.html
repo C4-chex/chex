@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>chex · 医学影像学习</title>
+<style>
+:root{--b:#06142d;--c:#102d53;--l:#315a88;--t:#ebf5ff;--m:#a9bfda;--a:#55e1ca;--g:#ffd36e}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 90% 0,#245280,transparent 30rem),var(--b);color:var(--t);font:16px system-ui,"Microsoft YaHei"}.app{max-width:1480px;margin:auto;padding:20px 28px 40px}.top{display:flex;justify-content:space-between;align-items:center}.brand{font-size:1.4rem;font-weight:850}.brand i{color:var(--a);font-style:normal}button,input,textarea{font:inherit}button{cursor:pointer;color:#e9f4ff;border:1px solid var(--l);background:#113962;border-radius:8px;padding:8px}.notice{margin:16px 0;padding:10px 14px;border:1px solid #776134;border-radius:10px;color:#ffe3a8;background:#271f13;font-size:.88rem}.grid{display:grid;grid-template-columns:245px minmax(0,1fr) 300px;gap:16px}.card{border:1px solid var(--l);border-radius:15px;background:linear-gradient(145deg,var(--c),#081d3c);overflow:hidden}.side,.panel{padding:15px}.label{display:block;margin:0 0 9px;color:var(--m);font-size:.75rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}.mode,.tool{display:block;width:100%;margin:7px 0;text-align:left;background:transparent;border-color:transparent}.mode.active,.mode:hover,.tool:hover{background:#143f6d;border-color:#4d7ca7}.tools{display:grid;grid-template-columns:1fr 1fr;gap:5px}.tools button{margin:0;border-color:#3b6793;font-size:.84rem}.case{padding:10px;border:1px solid #4077a8;border-radius:10px;background:#123966}.case small{color:#b6cae3}.line{border:0;border-top:1px solid var(--l);margin:16px 0}.bar{display:flex;justify-content:space-between;padding:12px 15px;border-bottom:1px solid var(--l)}.wrap{height:590px;background:#020711;touch-action:none;position:relative}.wrap.drop{outline:3px dashed var(--a);outline-offset:-8px}canvas{display:block;width:100%;height:100%;cursor:grab}.compare{display:none;height:590px;grid-template-columns:1fr 1fr;background:#020711}.compare.show{display:grid}.compare section{position:relative;border-right:1px solid var(--l)}.compare em{position:absolute;left:10px;top:9px;background:#061a35cc;padding:3px 7px;border-radius:6px;font-size:.76rem;font-style:normal}.tags{padding:9px 14px;color:var(--m);font-size:.77rem;background:#081d3b}.tag{display:inline-block;margin-right:5px;padding:2px 7px;border:1px solid #3c6c95;border-radius:99px}.tag.good{color:var(--a)}.right{display:grid;gap:16px;align-content:start}.panel h2{font-size:1rem;margin:0 0 10px}.upload{padding:16px 7px;border:1px dashed #5b85ac;border-radius:10px;text-align:center;color:#c6d8ed;font-size:.88rem}.primary{margin-top:8px;border:0;background:var(--a);color:#062338;font-weight:800}.file{display:none}.row{display:grid;grid-template-columns:74px 1fr 34px;gap:6px;align-items:center;margin:9px 0;color:#c0d3e9;font-size:.84rem}.row input{accent-color:var(--a)}.hint{padding:9px;border-left:3px solid var(--g);background:#2a2518;color:#f3e0ab;font-size:.82rem}.check{display:flex;gap:8px;margin:7px 0;color:#c9daf0;font-size:.85rem}.check input{accent-color:var(--a)}.progress{height:7px;background:#234267;border-radius:4px;overflow:hidden}.progress i{display:block;height:100%;width:0;background:var(--a)}.status{min-height:1.3em;margin-top:8px;color:var(--a);font-size:.8rem}.marks{padding:0;list-style:none;max-height:100px;overflow:auto;font-size:.82rem;color:#c5d8ee}.marks li{display:flex;justify-content:space-between;padding:5px;border-bottom:1px solid #254968}.marks button{padding:0 5px;border:0;background:none;color:#ffabab}textarea{width:100%;min-height:72px;background:#071d39;border:1px solid #416d97;border-radius:8px;padding:8px;color:white}.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}@media(max-width:1050px){.grid{grid-template-columns:230px 1fr}.right{grid-column:1/-1;grid-template-columns:repeat(3,1fr)}.wrap,.compare{height:460px}}@media(max-width:700px){.app{padding:14px}.grid,.right{display:block}.card{margin-bottom:12px}.wrap,.compare{height:390px}}
+</style>
+</head>
+<body>
+<main class="app">
+<nav class="top">
+<div class="brand">
+<i>✦</i> chex</div>
+<button id="lang">中文 / <b>EN</b>
+</button>
+</nav>
+<div class="notice">学习与研究用途：本平台仅用于学习与研究，不用于临床诊断、治疗建议或医疗决策。</div>
+<section class="grid">
+<aside class="card side">
+<span class="label">当前案例</span>
+<div class="case">
+<b>胸部 X 光 · 正位</b>
+<small id="name">公开教学样例</small>
+</div>
+<hr class="line">
+<span class="label">查看模式</span>
+<button class="mode active" data-mode="observe">◉ 观察</button>
+<button class="mode" data-mode="annotate">⌁ 标注</button>
+<button class="mode" data-mode="compare">⇄ 对比</button>
+<hr class="line">
+<span class="label">查看工具</span>
+<div class="tools">
+<button id="zin">＋ 放大</button>
+<button id="zout">－ 缩小</button>
+<button id="rot">↻ 旋转</button>
+<button id="flip">↔ 翻转</button>
+<button id="inv">◐ 反色</button>
+<button id="reset">↺ 复位</button>
+</div>
+</aside>
+<section class="card" id="viewer">
+<div class="bar">
+<b id="title">观察模式</b>
+<span id="zoomread">100%</span>
+</div>
+<div class="wrap" id="drop">
+<canvas id="cv">
+</canvas>
+</div>
+<div class="compare" id="compare">
+<section>
+<em>参考影像</em>
+<canvas id="ref">
+</canvas>
+</section>
+<section>
+<em>当前影像</em>
+<canvas id="cur">
+</canvas>
+</section>
+</div>
+<div class="tags">
+<span class="tag good">仅本地处理</span>
+<span class="tag">DICOM · PNG · JPG · WEBP</span>
+<span class="tag" id="info">教学样例 · 已去标识化</span>
+</div>
+</section>
+<aside class="right">
+<section class="card panel">
+<h2>导入影像</h2>
+<div class="upload">拖入已去标识化的 DICOM 或图片<br>
+<button class="primary" id="choose">选择文件</button>
+<input class="file" id="file" type="file" accept=".dcm,.dicom,application/dicom,image/png,image/jpeg,image/webp">
+</div>
+<div class="actions">
+<button id="refchoose">选择参考图</button>
+<input class="file" id="reffile" type="file" accept=".dcm,.dicom,application/dicom,image/png,image/jpeg,image/webp">
+</div>
+<div class="status" id="status">已加载样例</div>
+</section>
+<section class="card panel">
+<h2>窗宽与视图</h2>
+<label class="row">亮度 <input id="bright" type="range" min="-80" max="80" value="0">
+<output>0</output>
+</label>
+<label class="row">对比度 <input id="contrast" type="range" min="40" max="220" value="100">
+<output>100</output>
+</label>
+<label class="row">缩放 <input id="zoom" type="range" min="50" max="300" value="100">
+<output>100</output>
+</label>
+<div class="hint" id="hint">拖拽可平移，滚轮可缩放。</div>
+</section>
+<section class="card panel">
+<h2>系统阅片</h2>
+<label class="check">
+<input type="checkbox">图像质量</label>
+<label class="check">
+<input type="checkbox">A · 气道</label>
+<label class="check">
+<input type="checkbox">B · 肺野与胸膜</label>
+<label class="check">
+<input type="checkbox">C · 心影与纵隔</label>
+<label class="check">
+<input type="checkbox">D · 膈肌</label>
+<label class="check">
+<input type="checkbox">E · 其他结构</label>
+<div class="progress">
+<i id="prog">
+</i>
+</div>
+<div class="status" id="pt">已复核 0 / 6 项</div>
+</section>
+<section class="card panel">
+<h2>标注</h2>
+<small>标注模式下，在影像上右键点击添加标注；左键拖拽可平移影像。</small>
+<input id="tagInput" placeholder="输入标签或描述，例如：右上肺野可疑阴影" style="width:100%;margin-top:8px;padding:8px;border:1px solid #ccd5df;border-radius:8px">
+<ul class="marks" id="marks">
+</ul>
+<div class="actions">
+<button id="clear">清除</button>
+<button id="export">导出标注记录</button>
+</div>
+</section>
+<section class="card panel">
+<h2>学习记录</h2>
+<textarea id="notes" placeholder="记录你的观察…">
+</textarea>
+<div class="actions">
+<button id="save">保存到本设备</button>
+<button id="clearnote">清空</button>
+</div>
+<div class="status" id="ns">
+</div>
+</section>
+</aside>
+</section>
+</main>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],S={i:null,r:null,z:1,x:0,y:0,o:0,f:1,n:false,b:0,c:100,m:[],mode:'observe',d:null};const sample='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 900"><defs><radialGradient id="a"><stop stop-color="#e7f1f1"/><stop offset=".65" stop-color="#91adb3"/><stop offset="1" stop-color="#25465b"/></radialGradient></defs><rect width="700" height="900" fill="#06111e"/><ellipse cx="350" cy="450" rx="276" ry="426" fill="url(#a)"/><ellipse cx="245" cy="475" rx="138" ry="292" fill="#071522"/><ellipse cx="455" cy="475" rx="138" ry="292" fill="#071522"/><path d="M350 80C315 270 320 560 350 795c30-235 35-525 0-715" fill="#bed2d2" opacity=".8"/><g fill="none" stroke="#eef7f5" stroke-width="14" opacity=".3"><path d="M180 190Q350 285 520 190M145 265Q350 370 555 265M125 350Q350 460 575 350M118 445Q350 550 582 445M120 545Q350 650 580 545"/></g><text x="350" y="865" text-anchor="middle" font-family="sans-serif" font-size="20" fill="#c7dcdf">CHEX · EDUCATIONAL SAMPLE</text></svg>';function img(src,ref=false){let i=new Image;i.onload=()=>{if(ref)S.r=i;else{S.i=i;S.m=[];reset()}draw()};i.src=src}img('data:image/svg+xml,'+encodeURIComponent(sample));function ctx(c){let r=c.getBoundingClientRect(),d=devicePixelRatio||1;c.width=r.width*d;c.height=r.height*d;let x=c.getContext('2d');x.scale(d,d);return[x,r.width,r.height]}function paint(c,i,mark){if(!i)return;let[x,w,h]=ctx(c);x.fillStyle='#020711';x.fillRect(0,0,w,h);x.save();x.translate(w/2+S.x,h/2+S.y);x.rotate(S.o*Math.PI/180);x.scale(S.z*S.f,S.z);x.filter=`brightness(${100+S.b}%) contrast(${S.c}%) ${S.n?'invert(1)':''}`;let q=Math.min(w/i.width,h/i.height);x.drawImage(i,-i.width*q/2,-i.height*q/2,i.width*q,i.height*q);x.restore();if(mark)S.m.forEach((m,k)=>{let X=w/2+S.x+(m.x-.5)*Math.min(w,h)*S.z,Y=h/2+S.y+(m.y-.5)*Math.min(w,h)*S.z;x.fillStyle='#55e1ca';x.beginPath();x.arc(X,Y,12,0,7);x.fill();x.fillStyle='#06203e';x.textAlign='center';x.font='bold 12px sans-serif';x.fillText(k+1,X,Y+4)})}function draw(){paint($('#cv'),S.i,true);paint($('#ref'),S.r||S.i);paint($('#cur'),S.i)}function reset(){Object.assign(S,{z:1,x:0,y:0,o:0,f:1,n:false,b:0,c:100});['bright','contrast','zoom'].forEach((e,i)=>$('#'+e).value=i==1?100:i==2?100:0);read()}function read(){$('#zoomread').textContent=Math.round(S.z*100)+'%';$$('.row output')[0].value=S.b;$$('.row output')[1].value=S.c;$$('.row output')[2].value=Math.round(S.z*100)}function mode(m){S.mode=m;$$('.mode').forEach(b=>b.classList.toggle('active',b.dataset.mode==m));$('#viewer').classList.toggle('compare-on',m=='compare');$('#compare').classList.toggle('show',m=='compare');$('#drop').style.display=m=='compare'?'none':'block';$('#title').textContent={observe:'Observe mode / 观察模式',annotate:'Annotation mode / 标注模式',compare:'Compare mode / 对比模式'}[m];$('#hint').textContent=m=='annotate'?'Click the image to add a learning marker. / 点击影像添加学习标记。':m=='compare'?'Reference and current images appear side by side. / 参考图与当前图并排。':'Drag to pan · scroll to zoom. Start with quality, then ABCDE.';draw()}$$('.mode').forEach(b=>b.onclick=()=>mode(b.dataset.mode));[['zin',()=>S.z+=.15],['zout',()=>S.z-=.15],['rot',()=>S.o+=90],['flip',()=>S.f*=-1],['inv',()=>S.n=!S.n],['reset',reset]].forEach(([id,f])=>$('#'+id).onclick=()=>{f();S.z=Math.max(.5,Math.min(3,S.z));$('#zoom').value=S.z*100;read();draw()});['bright','contrast','zoom'].forEach(id=>$('#'+id).oninput=e=>{S[id=='bright'?'b':id=='contrast'?'c':'z']=id=='zoom'?e.target.value/100:+e.target.value;read();draw()});function load(f,r=false){if(!f)return;let q=new FileReader;q.onload=e=>{img(e.target.result,r);if(!r){$('#name').textContent=f.name;$('#info').textContent='Local only · '+f.name;$('#status').textContent='Loaded locally / 已在本地加载'}};q.readAsDataURL(f)}$('#choose').onclick=()=>$('#file').click();$('#refchoose').onclick=()=>$('#reffile').click();$('#file').onchange=e=>load(e.target.files[0]);$('#reffile').onchange=e=>{load(e.target.files[0],true);mode('compare')};let d=$('#drop');['dragover','dragenter'].forEach(t=>d.addEventListener(t,e=>{e.preventDefault();d.classList.add('drop')}));['drop','dragleave'].forEach(t=>d.addEventListener(t,e=>{e.preventDefault();d.classList.remove('drop')}));d.ondrop=e=>load(e.dataTransfer.files[0]);let cv=$('#cv');cv.onpointerdown=e=>{let r=cv.getBoundingClientRect();if(S.mode=='annotate'){S.m.push({x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height});marks();draw();return}S.d=[e.clientX,e.clientY,S.x,S.y];cv.setPointerCapture(e.pointerId)};cv.onpointermove=e=>{if(S.d){S.x=S.d[2]+e.clientX-S.d[0];S.y=S.d[3]+e.clientY-S.d[1];draw()}};cv.onpointerup=()=>S.d=null;cv.onwheel=e=>{e.preventDefault();S.z=Math.max(.5,Math.min(3,S.z+(e.deltaY<0?.1:-.1)));$('#zoom').value=S.z*100;read();draw()};function marks(){$('#marks').innerHTML=S.m.map((x,i)=>`<li>#${i+1} · Learning marker <button data-x="${i}">×</button>
+</li>`).join('')||'<li>No markers yet / 暂无标记</li>';$$('#marks button').forEach(b=>b.onclick=()=>{S.m.splice(b.dataset.x,1);marks();draw()})}marks();$('#clear').onclick=()=>{S.m=[];marks();draw()};let cs=$$('.check input');function pg(){let n=cs.filter(x=>x.checked).length;$('#prog').style.width=n/cs.length*100+'%';$('#pt').textContent=n+' / 6 reviewed';localStorage.chexchecks=JSON.stringify(cs.map(x=>x.checked))}JSON.parse(localStorage.chexchecks||'[]').forEach((x,i)=>cs[i].checked=x);cs.forEach(x=>x.onchange=pg);pg();$('#notes').value=localStorage.chexnotes||'';$('#save').onclick=()=>{localStorage.chexnotes=$('#notes').value;$('#ns').textContent='Saved on this device / 已保存到本设备'};$('#clearnote').onclick=()=>{delete localStorage.chexnotes;$('#notes').value='';$('#ns').textContent='Cleared / 已清空'};$('#export').onclick=()=>{let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({annotations:S.m,notes:$('#notes').value,checklist:cs.map(x=>x.checked),disclaimer:'Educational use only; not for diagnosis.'},null,2)],{type:'application/json'}));a.download='chex-learning-record.json';a.click()};window.onresize=draw;
+</script>
+<script src="https://unpkg.com/dicom-parser@1.8.21/dist/dicomParser.min.js"></script>
+<script>
+function isDicom(f){return /\.(dcm|dicom)$/i.test(f.name)||f.type==='application/dicom'}
+async function loadDicom(file,reference=false){try{if(!window.dicomParser)throw Error('DICOM parser is unavailable. Please check your connection and reload.');const ds=dicomParser.parseDicom(new Uint8Array(await file.arrayBuffer()));const uid=(ds.string('x00020010')||'').trim();if(!['1.2.840.10008.1.2','1.2.840.10008.1.2.1'].includes(uid))throw Error('This learning viewer currently supports uncompressed little-endian DICOM only.');const rows=ds.uint16('x00280010'),cols=ds.uint16('x00280011'),bits=ds.uint16('x00280100'),samples=ds.uint16('x00280002')||1,pixel=ds.elements.x7fe00010;if(!rows||!cols||!pixel||samples!==1||![8,16].includes(bits))throw Error('Unsupported DICOM pixel format: single-frame 8/16-bit monochrome images only.');const signed=(ds.uint16('x00280103')||0)===1,view=new DataView(ds.byteArray.buffer,ds.byteArray.byteOffset+pixel.dataOffset,pixel.length),n=rows*cols;let lo=Infinity,hi=-Infinity,vals=new Float32Array(n);for(let k=0;k<n;k++){let v=bits===8?(signed?view.getInt8(k):view.getUint8(k)):signed?view.getInt16(k*2,true):view.getUint16(k*2,true);vals[k]=v;lo=Math.min(lo,v);hi=Math.max(hi,v)}let wc=Number((ds.string('x00281050')||'').split('\\')[0]),ww=Number((ds.string('x00281051')||'').split('\\')[0]);if(!Number.isFinite(wc)||!Number.isFinite(ww)||ww<=1){wc=(lo+hi)/2;ww=hi-lo||1}const out=document.createElement('canvas');out.width=cols;out.height=rows;const cx=out.getContext('2d'),data=cx.createImageData(cols,rows);for(let k=0;k<n;k++){let q=Math.max(0,Math.min(255,((vals[k]-(wc-ww/2))/ww)*255));data.data.set([q,q,q,255],k*4)}cx.putImageData(data,0,0);if(reference)S.r=out;else{S.i=out;S.m=[];reset();$('#name').textContent=file.name;$('#info').textContent=`DICOM · ${cols} × ${rows} · local only`;$('#status').textContent=`DICOM loaded locally / 已本地解析：${rows}×${cols}, ${bits}-bit, WL ${Math.round(wc)}/${Math.round(ww)}`}draw()}catch(e){$('#status').textContent='DICOM could not be opened / 无法打开 DICOM：'+e.message}}
+$('#file').onchange=e=>isDicom(e.target.files[0])?loadDicom(e.target.files[0]):load(e.target.files[0]);$('#reffile').onchange=e=>{const f=e.target.files[0];isDicom(f)?loadDicom(f,true):load(f,true);mode('compare')};
+</script>
+<style>
+:root{--b:#f6f8fb;--c:#fff;--l:#dbe3ec;--t:#172033;--m:#65758b;--a:#167d70;--g:#c58a17}body{background:#f6f8fb;color:var(--t)}.card{background:#fff;box-shadow:0 6px 18px #1736570d}.notice{background:#fff7e5;color:#76581a;border-color:#f0d99c}.case,.mode.active,.mode:hover,.tool:hover{background:#eef7f6;color:#173a38;border-color:#b9ddd8}button{background:#fff;color:#29445f;border-color:#d3dee9}.wrap,.compare{background:#1c2430}.tags{background:#f8fafc;color:#607188}.row{grid-template-columns:80px 1fr 42px}.row input[type=range]{height:8px;accent-color:#167d70}.row input[type=range]::-webkit-slider-thumb{width:19px;height:19px}.check{color:#38495f}.panel small,.marks{color:#52657c}.hint{background:#fff8e9;color:#76581a}.progress{background:#e3ebf2}.status{color:#167d70}textarea{background:#fff;color:#172033;border-color:#ccd8e4}.brand i{color:#167d70}.tag.good{color:#167d70}
+</style>
+<script>
+function marks(){ $('#marks').innerHTML=S.m.map((x,i)=>`<li><span>#${i+1} · ${x.label||'Learning marker / 学习标记'}</span><button data-x="${i}">×</button></li>`).join('')||'<li>No markers yet / 暂无标记</li>';$$('#marks button').forEach(b=>b.onclick=()=>{S.m.splice(+b.dataset.x,1);marks();draw()})}
+cv.onpointerdown=e=>{let r=cv.getBoundingClientRect();if(S.mode==='annotate'){let label=$('#tagInput').value.trim()||'Learning marker / 学习标记';S.m.push({x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height,label});$('#tagInput').value='';marks();draw();return}S.d=[e.clientX,e.clientY,S.x,S.y];cv.setPointerCapture(e.pointerId)};
+</script>
+<script src="./library-api.js"></script>
+<script>
+/* Main viewer layout: keep intake directly below the image and learning tools separate. */
+const mainViewer=document.querySelector('#viewer'), rightRail=document.querySelector('.right');
+const intake=rightRail.querySelector('.card.panel');
+const annotation=[...rightRail.querySelectorAll('.card.panel')].find(x=>x.querySelector('#marks'));
+const checklist=[...rightRail.querySelectorAll('.card.panel')].find(x=>x.querySelector('#prog'));
+if(intake&&mainViewer){intake.classList.add('intake-panel');mainViewer.appendChild(intake)}
+if(annotation&&rightRail){rightRail.prepend(annotation)}
+if(checklist)checklist.remove();
+const practice=document.createElement('a');practice.href='./practice.html';practice.className='mode practice-link';practice.textContent='◎ Practice mode / 练习模式';document.querySelector('.side').appendChild(practice);
+</script>
+<style>
+.practice-link{display:block;text-decoration:none;color:#167d70;font-weight:750}.intake-panel{margin:0;border:0;border-top:1px solid #dbe3ec;border-radius:0;background:#fff;box-shadow:none}.intake-panel .upload{max-width:680px;margin:auto;background:#fbfcfe}.right{grid-auto-rows:min-content}.right .panel:first-child{order:-1}.side{display:flex;flex-direction:column}.side .practice-link{margin-top:14px;padding:10px;border:1px solid #b9ddd8;border-radius:9px;background:#eef7f6}@media(max-width:1050px){.intake-panel{grid-column:1/-1}}
+</style>
+<script>
+/* Chinese-only presentation layer. File-format abbreviations stay unchanged. */
+const cn={
+ 'Current case / 当前案例':'当前案例','Learning mode / 学习模式':'查看模式','Viewer tools / 阅片工具':'查看工具','Chest X-ray · PA':'胸部 X 光 · 正位','Public teaching sample / 公开教学样例':'公开教学样例','Observe / 观察':'观察','Annotate / 标注':'标注','Compare / 对比':'对比','Observe mode / 观察模式':'观察模式','Annotation mode / 标注模式':'标注模式','Compare mode / 对比模式':'对比模式','Image input / 导入影像':'导入影像','Drag a de-identified DICOM or image here / 拖入去标识化 DICOM 或图片':'拖入已去标识化的 DICOM 或图片','Choose file / 选择文件':'选择文件','Reference image / 选择参考图':'选择参考图','Sample loaded / 已加载样例':'已加载样例','Window & view / 窗宽与视图':'窗宽与视图','Brightness':'亮度','Contrast':'对比度','Zoom':'缩放','Annotations / 标注':'标注','Annotation mode: click image to place a marker. 标注模式：点击影像添加标记。':'在标注模式下，点击影像添加标记。','Clear / 清除':'清除','Export JSON / 导出':'导出 JSON','Reflection / 学习记录':'学习记录','Save locally / 本地保存':'保存到本设备','Clear / 清空':'清空','Teaching sample · De-identified':'教学样例 · 已去标识化','LOCAL ONLY':'仅本地处理','Reference / 参考':'参考影像','Current / 当前':'当前影像','No markers yet / 暂无标记':'暂无标记','Learning marker / 学习标记':'学习标记','Practice mode / 练习模式':'练习模式','DICOM metadata / DICOM 信息':'DICOM 信息'
+};
+const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);let node;while(node=walker.nextNode()){const v=node.nodeValue.trim();if(cn[v])node.nodeValue=node.nodeValue.replace(v,cn[v])}
+document.querySelector('#lang').style.display='none';document.querySelector('#tagInput').placeholder='标签或描述，例如：右上肺野';document.querySelector('#notes').placeholder='记录你的观察…';
+</script>
+<script>
+/* Explicit Chinese labels, including controls whose values change at runtime. */
+document.querySelector('.brand').innerHTML='<i>✦</i> chex';
+document.querySelector('.notice').textContent='学习与研究用途：本平台仅用于学习与研究，不用于临床诊断、治疗建议或医疗决策。';
+document.querySelectorAll('.mode').forEach(b=>b.textContent=({observe:'◉ 观察',annotate:'⌁ 标注',compare:'⇄ 对比'}[b.dataset.mode]||b.textContent));
+document.querySelector('#zin').textContent='＋ 放大';document.querySelector('#zout').textContent='－ 缩小';document.querySelector('#rot').textContent='↻ 旋转';document.querySelector('#flip').textContent='↔ 翻转';document.querySelector('#inv').textContent='◐ 反色';document.querySelector('#reset').textContent='↺ 复位';
+document.querySelector('#title').textContent='观察模式';document.querySelector('.side .label').textContent='当前案例';document.querySelectorAll('.side .label')[1].textContent='查看模式';document.querySelectorAll('.side .label')[2].textContent='查看工具';
+document.querySelector('#name').textContent='公开教学样例';document.querySelector('.case b').textContent='胸部 X 光 · 正位';document.querySelector('.practice-link').textContent='◎ 练习模式';
+document.querySelectorAll('.panel h2').forEach(h=>{const d={'Image input / 导入影像':'导入影像','Annotations / 标注':'标注','Window & view / 窗宽与视图':'窗宽与视图','Reflection / 学习记录':'学习记录'};h.textContent=d[h.textContent]||h.textContent});
+document.querySelector('#choose').textContent='选择文件';document.querySelector('#refchoose').textContent='选择参考图';document.querySelector('#clear').textContent='清除';document.querySelector('#export').textContent='导出 JSON';document.querySelector('#save').textContent='保存到本设备';document.querySelector('#clearnote').textContent='清空';document.querySelector('#info').textContent='教学样例 · 已去标识化';
+document.querySelector('.upload').childNodes[0].nodeValue='拖入已去标识化的 DICOM 或图片';document.querySelector('.tags .good').textContent='仅本地处理';document.querySelector('#compare em').textContent='参考影像';document.querySelectorAll('#compare em')[1].textContent='当前影像';
+function mode(m){S.mode=m;$$('.mode').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));$('#viewer').classList.toggle('compare-on',m==='compare');$('#compare').classList.toggle('show',m==='compare');$('#drop').style.display=m==='compare'?'none':'block';$('#title').textContent={observe:'观察模式',annotate:'标注模式',compare:'对比模式'}[m];$('#hint').textContent=m==='annotate'?'点击影像添加带标签的学习标记。':m==='compare'?'参考影像与当前影像并排显示，用于学习比较。':'拖拽可平移，滚轮可缩放。';draw()}$$('.mode').forEach(b=>b.onclick=()=>mode(b.dataset.mode));
+img('data:image/svg+xml,'+encodeURIComponent(sample.replace('CHEX · EDUCATIONAL SAMPLE','chex · 教学样例')));
+const gallery=document.createElement('section');gallery.className='reference-gallery';gallery.innerHTML='<h2>常用部位参考图</h2><p>点击图片可作为参考影像使用；来源均标注为公共领域或 CC0。</p><div class="reference-grid"><button data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Chest%20X-Ray.jpg"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Chest%20X-Ray.jpg" alt="胸部 X 光"><span>胸部</span></button><button data-src="https://commons.wikimedia.org/wiki/Special:FilePath/X-ray%20of%20the%20hand%20of%20a%207%20year%20old%20male%20-%20dorsoplantar.jpg"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/X-ray%20of%20the%20hand%20of%20a%207%20year%20old%20male%20-%20dorsoplantar.jpg" alt="手部 X 光"><span>手部</span></button><button data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Knee%20Front%20X-ray.jpg"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Knee%20Front%20X-ray.jpg" alt="膝部 X 光"><span>膝部</span></button><button data-src="https://commons.wikimedia.org/wiki/Special:FilePath/Foot%20x-rays.jpg"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Foot%20x-rays.jpg" alt="足部 X 光"><span>足部</span></button></div><small>来源：维基共享资源公共领域/CC0 图像。</small></section>';document.querySelector('#viewer').appendChild(gallery);gallery.querySelectorAll('button').forEach(b=>b.onclick=()=>{img(b.dataset.src,true);mode('compare')});
+</script><style>.reference-gallery{padding:18px;border-top:1px solid #dbe3ec;background:#fff}.reference-gallery h2{margin:0 0 4px;font-size:1rem}.reference-gallery p,.reference-gallery small{color:#65758b;font-size:.82rem}.reference-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:12px 0}.reference-grid button{padding:0;overflow:hidden;text-align:center;background:#fff}.reference-grid img{display:block;width:100%;height:110px;object-fit:contain;background:#111923}.reference-grid span{display:block;padding:6px;color:#253a53}@media(max-width:650px){.reference-grid{grid-template-columns:repeat(2,1fr)}}</style>
+<script>
+/* Viewport math: annotations live in image coordinates, not screen coordinates. */
+function paint(c,i,mark){if(!i)return;let[x,w,h]=ctx(c);x.fillStyle='#05080d';x.fillRect(0,0,w,h);const q=Math.min(w/i.width,h/i.height),cx=w/2+S.x,cy=h/2+S.y;x.save();x.translate(cx,cy);x.rotate(S.o*Math.PI/180);x.scale(S.z*S.f,S.z);x.filter=`brightness(${100+S.b}%) contrast(${S.c}%) ${S.n?'invert(1)':''}`;x.drawImage(i,-i.width*q/2,-i.height*q/2,i.width*q,i.height*q);x.restore();if(mark)S.m.forEach((m,k)=>{const lx=(m.x-.5)*i.width*q*S.z*S.f,ly=(m.y-.5)*i.height*q*S.z,rad=S.o*Math.PI/180,px=cx+Math.cos(rad)*lx-Math.sin(rad)*ly,py=cy+Math.sin(rad)*lx+Math.cos(rad)*ly;x.fillStyle='#37d3b4';x.beginPath();x.arc(px,py,12,0,Math.PI*2);x.fill();x.fillStyle='#06243a';x.textAlign='center';x.font='bold 12px sans-serif';x.fillText(k+1,px,py+4)})}
+function imagePoint(e){const r=cv.getBoundingClientRect(),w=r.width,h=r.height,i=S.i,q=Math.min(w/i.width,h/i.height),dx=e.clientX-r.left-(w/2+S.x),dy=e.clientY-r.top-(h/2+S.y),a=-S.o*Math.PI/180,rx=Math.cos(a)*dx-Math.sin(a)*dy,ry=Math.sin(a)*dx+Math.cos(a)*dy;return{x:rx/(S.z*S.f*i.width*q)+.5,y:ry/(S.z*i.height*q)+.5}}
+cv.onpointerdown=e=>{if(S.mode==='annotate'){const p=imagePoint(e);if(p.x<0||p.x>1||p.y<0||p.y>1)return;const label=$('#tagInput').value.trim()||'学习标记';S.m.push({...p,label});$('#tagInput').value='';marks();draw();return}S.d=[e.clientX,e.clientY,S.x,S.y];cv.setPointerCapture(e.pointerId);cv.style.cursor='grabbing'};
+cv.onpointermove=e=>{if(!S.d)return;S.x=S.d[2]+e.clientX-S.d[0];S.y=S.d[3]+e.clientY-S.d[1];draw()};cv.onpointerup=e=>{S.d=null;cv.style.cursor='grab';try{cv.releasePointerCapture(e.pointerId)}catch{}};
+const hud=document.createElement('div');hud.className='diagnostic-hud';hud.innerHTML='<span class="hud-tl">胸部正位</span><span class="hud-tr">本地学习影像</span><span class="hud-bl">左</span><span class="hud-br">右</span>';document.querySelector('#drop').appendChild(hud);
+</script><style>
+/* Hospital workstation inspired reading viewport. */
+#viewer{border-radius:4px;background:#161b22;border-color:#303944;box-shadow:0 8px 22px #0002}#viewer .bar{background:#252d36;color:#e7edf4;border-bottom-color:#3c4753;font-family:Arial,"Microsoft YaHei",sans-serif;font-size:.86rem;letter-spacing:.02em}#viewer .wrap{background:#05080d;border-bottom:1px solid #303944}#viewer .tags{background:#202730;color:#b8c3ce;border-top:1px solid #37414c}#viewer .tag{border-color:#53616d;color:#c6d0db}#viewer .tag.good{color:#55d1b6}.diagnostic-hud{position:absolute;inset:0;pointer-events:none;color:#aeb8c4;font:12px Arial,"Microsoft YaHei",sans-serif;text-shadow:0 1px 2px #000}.diagnostic-hud span{position:absolute;padding:8px}.hud-tl{top:0;left:0}.hud-tr{top:0;right:0}.hud-bl{bottom:0;left:0;font-size:18px!important}.hud-br{bottom:0;right:0;font-size:18px!important}#cv{cursor:grab}
+</style>
+<script>
+/* Mouse conventions: left drag pans; right click adds an annotation only in annotation mode. */
+function beginPan(e){S.d=[e.clientX,e.clientY,S.x,S.y];e.currentTarget.setPointerCapture(e.pointerId);e.currentTarget.style.cursor='grabbing'}
+function movePan(e){if(!S.d)return;S.x=S.d[2]+e.clientX-S.d[0];S.y=S.d[3]+e.clientY-S.d[1];draw()}
+function endPan(e){S.d=null;e.currentTarget.style.cursor='grab';try{e.currentTarget.releasePointerCapture(e.pointerId)}catch{}}
+function annotateAt(e){const p=imagePoint(e);if(p.x<0||p.x>1||p.y<0||p.y>1)return;S.m.push({...p,label:$('#tagInput').value.trim()||'学习标记'});$('#tagInput').value='';marks();draw()}
+cv.onpointerdown=e=>{if(e.button===2&&S.mode==='annotate'){annotateAt(e);return}if(e.button===0)beginPan(e)};cv.onpointermove=movePan;cv.onpointerup=endPan;cv.oncontextmenu=e=>e.preventDefault();
+[$('#ref'),$('#cur')].forEach(c=>{c.onpointerdown=e=>{if(e.button===0)beginPan(e)};c.onpointermove=movePan;c.onpointerup=endPan;c.oncontextmenu=e=>e.preventDefault()});
+</script><style>
+#viewer .wrap,#viewer .compare{height:720px}#viewer{min-height:820px}@media(max-width:1050px){#viewer .wrap,#viewer .compare{height:580px}#viewer{min-height:680px}}@media(max-width:700px){#viewer .wrap,#viewer .compare{height:440px}#viewer{min-height:0}}
+</style>
+<script>
+/* Independent pan state for the two comparison viewports. */
+const compareView={ref:{x:0,y:0},cur:{x:0,y:0}};
+function paintCompare(c,i,v){if(!i)return;let[x,w,h]=ctx(c);x.fillStyle='#05080d';x.fillRect(0,0,w,h);const q=Math.min(w/i.width,h/i.height);x.save();x.translate(w/2+v.x,h/2+v.y);x.rotate(S.o*Math.PI/180);x.scale(S.z*S.f,S.z);x.filter=`brightness(${100+S.b}%) contrast(${S.c}%) ${S.n?'invert(1)':''}`;x.drawImage(i,-i.width*q/2,-i.height*q/2,i.width*q,i.height*q);x.restore()}
+function draw(){paint($('#cv'),S.i,true);paintCompare($('#ref'),S.r||S.i,compareView.ref);paintCompare($('#cur'),S.i,compareView.cur)}
+function bindCompare(c,key){c.onpointerdown=e=>{if(e.button!==0)return;const v=compareView[key];c._pan=[e.clientX,e.clientY,v.x,v.y];c.setPointerCapture(e.pointerId);c.style.cursor='grabbing'};c.onpointermove=e=>{if(!c._pan)return;const v=compareView[key];v.x=c._pan[2]+e.clientX-c._pan[0];v.y=c._pan[3]+e.clientY-c._pan[1];draw()};c.onpointerup=e=>{c._pan=null;c.style.cursor='grab';try{c.releasePointerCapture(e.pointerId)}catch{}};c.oncontextmenu=e=>e.preventDefault()}
+bindCompare($('#ref'),'ref');bindCompare($('#cur'),'cur');
+</script>
+<style>
+.marks{max-height:176px}.marks li{gap:6px;align-items:center}.mark-open{flex:1;padding:6px 7px;border:0!important;background:transparent!important;text-align:left!important;color:#304863!important}.mark-open:hover,.mark-open.active{background:#eaf7f5!important;border-radius:6px}.mark-open b,.mark-open small{display:block}.mark-open small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#607188}.mark-remove{flex:0 0 auto}.mark-detail{display:none;margin:9px 0;padding:10px;border:1px solid #b9ddd8;border-radius:8px;background:#f5fbfa}.mark-detail.show{display:block}.mark-detail label{display:block;margin-bottom:5px;color:#35535c;font-weight:750;font-size:.82rem}.mark-detail textarea{min-height:64px}.mark-detail .actions{margin-top:6px}.mark-detail .mark-pos{margin:0;color:#65758b;font-size:.76rem}
+</style>
+<script>
+/* A tag is a personal annotation: the full description can be reopened and edited. */
+let selectedMark=-1;
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function marks(){const list=$('#marks');if(!S.m.length){selectedMark=-1;list.innerHTML='<li>暂无标注</li>';ensureMarkDetail();return}if(selectedMark<0||selectedMark>=S.m.length)selectedMark=S.m.length-1;list.innerHTML=S.m.map((m,i)=>`<li><button class="mark-open ${i===selectedMark?'active':''}" data-open="${i}"><b>标注 #${i+1}</b><small>${esc(m.label||'学习标记')}</small></button><button class="mark-remove" title="删除标注" data-remove="${i}">×</button></li>`).join('');list.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{selectedMark=+b.dataset.open;marks()});list.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{const n=+b.dataset.remove;S.m.splice(n,1);if(selectedMark>=S.m.length)selectedMark=S.m.length-1;marks();draw()});ensureMarkDetail()}
+function ensureMarkDetail(){let box=$('#markDetail');if(!box){box=document.createElement('section');box.id='markDetail';box.className='mark-detail';$('#marks').after(box)}const m=S.m[selectedMark];if(!m){box.className='mark-detail';box.innerHTML='';return}box.className='mark-detail show';box.innerHTML=`<label for="markEdit">标注 #${selectedMark+1} 的描述</label><textarea id="markEdit" aria-label="标注描述">${esc(m.label||'学习标记')}</textarea><p class="mark-pos">位置：影像内 ${Math.round(m.x*100)}% × ${Math.round(m.y*100)}%</p><div class="actions"><button id="markSave">保存描述</button><button id="markFocus">在图中查看</button></div>`;$('#markSave').onclick=()=>{m.label=$('#markEdit').value.trim()||'学习标记';marks();draw()};$('#markFocus').onclick=()=>{draw();$('#status').textContent='该标注在影像中以编号 '+(selectedMark+1)+' 显示。'}}
+function annotateAt(e){const p=imagePoint(e);if(p.x<0||p.x>1||p.y<0||p.y>1)return;S.m.push({...p,label:$('#tagInput').value.trim()||'学习标记'});selectedMark=S.m.length-1;$('#tagInput').value='';marks();draw()}
+function mode(m){S.mode=m;$$('.mode').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));$('#viewer').classList.toggle('compare-on',m==='compare');$('#compare').classList.toggle('show',m==='compare');$('#drop').style.display=m==='compare'?'none':'block';$('#title').textContent={observe:'观察模式',annotate:'标注模式',compare:'对比模式'}[m];$('#hint').textContent=m==='annotate'?'右键点击影像添加标注；左键拖拽可平移。':m==='compare'?'参考影像与当前影像并排显示，可分别拖动。':'拖拽可平移，滚轮可缩放。';draw()}
+$('#export').textContent='导出标注记录';$('#clear').onclick=()=>{S.m=[];selectedMark=-1;marks();draw()};$('#save').onclick=()=>{localStorage.chexnotes=$('#notes').value;$('#ns').textContent='已保存到本设备。'};$('#clearnote').onclick=()=>{delete localStorage.chexnotes;$('#notes').value='';$('#ns').textContent='已清空。'};$('#export').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({标注:S.m,学习记录:$('#notes').value,说明:'仅用于学习，不用于临床诊断。'},null,2)],{type:'application/json'}));a.download='chex-标注记录.json';a.click()};marks();
+</script>
+<style>
+/* Light, image-first annotation treatment: dots never cover the study. */
+.mark-item{flex:1;min-width:0;padding:6px 7px;color:#304863}.mark-item b,.mark-item small{display:block}.mark-item small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#607188}.mark-detail .mark-desc{margin:4px 0 8px;white-space:pre-wrap;overflow-wrap:anywhere;color:#1e384e}.mark-detail .detail-note{margin:0;color:#65758b;font-size:.77rem}
+</style>
+<script>
+/* Hover previews a tag description; a left click pins it until clicked again. */
+let hoverMark=-1;
+function markScreen(m){const r=cv.getBoundingClientRect(),w=r.width,h=r.height,i=S.i,q=Math.min(w/i.width,h/i.height),cx=w/2+S.x,cy=h/2+S.y,lx=(m.x-.5)*i.width*q*S.z*S.f,ly=(m.y-.5)*i.height*q*S.z,a=S.o*Math.PI/180;return{x:cx+Math.cos(a)*lx-Math.sin(a)*ly,y:cy+Math.sin(a)*lx+Math.cos(a)*ly}}
+function hitMark(e){const r=cv.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;let nearest=-1,best=17;S.m.forEach((m,i)=>{const p=markScreen(m),d=Math.hypot(x-p.x,y-p.y);if(d<best){best=d;nearest=i}});return nearest}
+function paint(c,i,mark){if(!i)return;let[x,w,h]=ctx(c);x.fillStyle='#05080d';x.fillRect(0,0,w,h);const q=Math.min(w/i.width,h/i.height),cx=w/2+S.x,cy=h/2+S.y;x.save();x.translate(cx,cy);x.rotate(S.o*Math.PI/180);x.scale(S.z*S.f,S.z);x.filter=`brightness(${100+S.b}%) contrast(${S.c}%) ${S.n?'invert(1)':''}`;x.drawImage(i,-i.width*q/2,-i.height*q/2,i.width*q,i.height*q);x.restore();if(!mark)return;S.m.forEach((m,k)=>{const p=markScreen(m),active=k===selectedMark||k===hoverMark;x.save();x.globalAlpha=active?.82:.48;x.fillStyle='#31cfb4';x.beginPath();x.arc(p.x,p.y,active?8:6,0,Math.PI*2);x.fill();x.strokeStyle='#effffc';x.lineWidth=active?2:1;x.stroke();x.restore()})}
+function ensureMarkDetail(){let box=$('#markDetail');if(!box){box=document.createElement('section');box.id='markDetail';box.className='mark-detail';$('#marks').after(box)}const n=selectedMark>=0?selectedMark:hoverMark,m=S.m[n];if(!m){box.className='mark-detail';box.innerHTML='';return}box.className='mark-detail show';const pinned=n===selectedMark;box.innerHTML=`<label>标注 #${n+1} 的描述</label><p class="mark-desc">${esc(m.label||'学习标记')}</p><p class="mark-pos">位置：影像内 ${Math.round(m.x*100)}% × ${Math.round(m.y*100)}%</p>${pinned?'<textarea id="markEdit" aria-label="编辑标注描述">'+esc(m.label||'学习标记')+'</textarea><div class="actions"><button id="markSave">保存描述</button></div><p class="detail-note">已固定显示；再次左键点击该圆点即可关闭。</p>':'<p class="detail-note">悬停预览；左键点击该圆点可固定显示并编辑。</p>'}`;if(pinned)$('#markSave').onclick=()=>{m.label=$('#markEdit').value.trim()||'学习标记';marks();draw()}}
+function marks(){const list=$('#marks');if(!S.m.length){selectedMark=-1;hoverMark=-1;list.innerHTML='<li>暂无标注</li>';ensureMarkDetail();return}list.innerHTML=S.m.map((m,i)=>`<li><div class="mark-item"><b>标注 #${i+1}</b><small>${esc(m.label||'学习标记')}</small></div><button class="mark-remove" title="删除标注" data-remove="${i}">×</button></li>`).join('');list.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{const n=+b.dataset.remove;S.m.splice(n,1);if(selectedMark===n)selectedMark=-1;else if(selectedMark>n)selectedMark--;if(hoverMark===n)hoverMark=-1;else if(hoverMark>n)hoverMark--;marks();draw()});ensureMarkDetail()}
+function annotateAt(e){const p=imagePoint(e);if(p.x<0||p.x>1||p.y<0||p.y>1)return;S.m.push({...p,label:$('#tagInput').value.trim()||'学习标记'});selectedMark=-1;hoverMark=-1;$('#tagInput').value='';marks();draw()}
+function clearHover(){if(selectedMark<0&&hoverMark>=0){hoverMark=-1;ensureMarkDetail();draw()}}
+cv.onpointerdown=e=>{if(e.button===2&&S.mode==='annotate'){annotateAt(e);return}if(e.button!==0)return;const n=hitMark(e);if(n>=0){selectedMark=selectedMark===n?-1:n;hoverMark=-1;marks();draw();return}beginPan(e)};
+cv.onpointermove=e=>{if(S.d){movePan(e);return}const n=hitMark(e);if(n!==hoverMark){hoverMark=n;ensureMarkDetail();draw()}cv.style.cursor=n>=0?'pointer':'grab'};cv.onpointerup=endPan;cv.onpointerleave=clearHover;cv.oncontextmenu=e=>e.preventDefault();
+$('#clear').onclick=()=>{S.m=[];selectedMark=-1;hoverMark=-1;marks();draw()};$('#hint').textContent='拖拽可平移，滚轮可缩放。右键添加标注；悬停圆点查看描述。';marks();draw();
+</script>
+<style>.mark-edit{flex:0 0 auto;padding:2px 6px!important;font-size:.76rem!important;color:#167d70!important}</style>
+<script>
+/* A visible edit entry lets an existing annotation be revised without re-placing it. */
+function marks(){const list=$('#marks');if(!S.m.length){selectedMark=-1;hoverMark=-1;list.innerHTML='<li>暂无标注</li>';ensureMarkDetail();return}list.innerHTML=S.m.map((m,i)=>`<li><div class="mark-item"><b>标注 #${i+1}</b><small>${esc(m.label||'学习标记')}</small></div><button class="mark-edit" data-edit="${i}">编辑</button><button class="mark-remove" title="删除标注" data-remove="${i}">×</button></li>`).join('');list.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{selectedMark=+b.dataset.edit;hoverMark=-1;marks();draw();setTimeout(()=>$('#markEdit')?.focus(),0)});list.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{const n=+b.dataset.remove;S.m.splice(n,1);if(selectedMark===n)selectedMark=-1;else if(selectedMark>n)selectedMark--;if(hoverMark===n)hoverMark=-1;else if(hoverMark>n)hoverMark--;marks();draw()});ensureMarkDetail()}
+marks();
+</script>
+</body>
+</html>
